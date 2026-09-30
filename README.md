@@ -157,9 +157,14 @@ genuinely confusable through the Weber gate, and the pin says so.
   adversarial layer is a *signature* (edge-ledger's HMAC), not rehashing — the same
   lesson as Casey's FNV-1a-64 fleet chains vs our sha256: pick the digest for the
   adversary you actually have.
-- **Shape ≠ significance.** A change-point in noisy data is not yet a finding; the
-  e-process layer decides that (witness-validation's conditional-bound warning
-  applies). DRAWN: rolling-window shape stability before change-point alarms on real
-  telemetry.
+- **Shape ≠ significance — now answered by the e-witness bridge** (E1–E5, `src/esign.mjs`,
+  `docs/DRIFT-SIGNIFICANCE.md`). A change-point in noisy data is not yet a finding; the third
+  drift layer is an anytime-valid e-process with a Ville bound — consumed from
+  **SuperInstance/quilt-ewitness** as a sha256-pinned vendored instrument (retraction built in:
+  a fired tail predicate can never un-fire, a retracted e-witness can). `witnessDrift` returns
+  WHETHER (WITNESSED / NOT_WITNESSED / RETRACTED) joined with WHERE (change-points + shape hash).
+  `sigma` is REQUIRED and pre-registered; the honesty contract is inherited verbatim.
+  On real telemetry: register σ per-lane BEFORE looking, then witness. Honest limits in the doc
+  (Gaussian null on integer increments is an approximation; single series; per-cell δ).
 
 MIT.
