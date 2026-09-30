@@ -1,0 +1,21 @@
+# Vendored instrument: quilt-ewitness e-process core
+
+- **Source repo**: SuperInstance/quilt-ewitness (public)
+- **Pinned commit**: 61b9e0403f2254691570cdf877bbbf81624df1f1 (v0.1.0)
+- **File**: src/eproc.mjs -> vendored as eproc.mjs (unmodified bytes)
+- **sha256**: aad90ac5aedb4d8e19b189808b47b22fc7258044af2c25c8f7fc90efec19e63a
+- **Fetched**: 2026-09-30, by the snowball pulse executing the atlas-wave-67
+  synergy candidate (quilt-ewitness ships anytime-valid e-process witnesses
+  WITH RETRACTION; delta-shape's drift cells were heuristic — see
+  docs/DRIFT-SIGNIFICANCE.md).
+
+Why vendored, not a package dependency: delta-shape is dependency-free by
+doctrine (no package.json; the fleet's hash-the-canonical-bytes identity must
+hold offline). The fleet pattern for consuming another repo's instrument is a
+pinned vendored copy whose sha256 is itself pinned (cf. quilt-tools'
+vendor/quilt-core). The owning repo is named here, in the doc, and in the
+source header of src/esign.mjs — by-name citation, load-bearing: the bridge
+refuses to run against bytes that do not hash to the pin.
+
+Upgrade discipline: re-vendor from SuperInstance/quilt-ewitness, record the
+new commit + sha256 here, re-run test/esign.pins.mjs.
