@@ -55,6 +55,32 @@ receipted claim instead of a hope in a summary.
 - **subleq-fabric**: the trace is a pc-shape; S3's heal = a recurring change-point
   at address 9.
 
+## Dynamic gates: the surround sets the quantization (D7–D9, `src/gate.mjs`)
+
+The captain's extension: *depth comes from deltas — stereoscopic vision is a
+binocular delta, audio imaging is an interaural delay; a signal is a tap on the
+membrane of reality; and the gates are dynamic — discrete percepts that aren't
+absolute values, relative to a surround that moves (lighting, neighboring colors),
+like a band tuning to a comfortable voice until a fixed-tuning instrument joins.*
+
+`gate.mjs` is those mechanisms with the floats removed (`floorLog2` via `clz32`):
+
+| mechanism | pin |
+|---|---|
+| **Weber's law** — same \|Δ\|=10 at surround 10 vs 20 → one JND bin quieter | D7 |
+| **JND staircase** — geometric series = constant percept (`[10,10,10,10]`); arithmetic compresses (`[10,9,8,8]`) | D8 |
+| **the band and the tuning fork** — voices drifting +1/round: relative gate hears nothing (`level 0`, sub-binned); an absolute canon hears every round at full gain (`level 13`) | D9 |
+
+The honest nuance (pinned, not hidden): relative gates are **not deaf, they are
+scale-dependent** — a +100 jump is heard relatively (`[4,3,3]`), a +1 drift is not.
+That is the JND, not a bug.
+
+**The fleet lesson, pinned:** the canon chain with `prev_hash = 0` in every live
+cell (found today in `repo-publication-log`) is *the band with no tuning fork* —
+everyone tuned relative, drift invisible, until an absolute reference joins.
+Nonzero genesis prev_hash is the fork. This is also twist-engine commensuration in
+miniature: relative consensus + absolute anchor = a commensurable instrument.
+
 ## Honest limits (pinned, not hidden)
 
 - **Magnitude blindness is deliberate.** A +1 rise and a +1000 rise hash alike. Value

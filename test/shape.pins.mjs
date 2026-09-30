@@ -93,3 +93,35 @@ test("D6 R64's deltas-as-shape conclusions, sealed as verifiable receipts", () =
   const why = ledger.verify().why;
   assert.match(why, /receipt edited/);
 });
+
+// --- D7–D9: dynamic gates — the surround sets the quantization (captain) ---
+
+test("D7 Weber's law in integers: same absolute delta, different surround, different percept", async () => {
+  const g = await import("../src/gate.mjs");
+  const low = g.perceive([10, 10, 10, 10, 20], 4); // |delta| = 10 at surround 10
+  const high = g.perceive([20, 20, 20, 20, 10], 4); // |delta| = 10 at surround 20
+  assert.deepEqual(low[4], { i: 4, level: 10, signed: 1 });
+  assert.deepEqual(high[4], { i: 4, level: 9, signed: -1 }, "double the surround, one JND bin quieter");
+  assert.notEqual(g.perceptHash(low), g.perceptHash(high), "two membranes feel the same world differently");
+});
+
+test("D8 equal ratios feel equal: geometric series is a constant percept, arithmetic compresses", async () => {
+  const g = await import("../src/gate.mjs");
+  assert.deepEqual(g.perceive([8, 16, 32, 64, 128], 1).slice(1).map((p) => p.level), [10, 10, 10, 10], "octaves are equally spaced PERCEPTUALLY");
+  assert.deepEqual(g.perceive([8, 16, 24, 32, 40], 1).slice(1).map((p) => p.level), [10, 9, 8, 8], "equal steps compress as the surround grows — this is the JND staircase");
+});
+
+test("D9 the band and the tuning fork: relative gates hide drift, the canon reveals it", async () => {
+  const g = await import("../src/gate.mjs");
+  const band = [6400, 6401, 6402, 6403]; // every voice drifts +1 per round, together
+  const rel = g.perceive(band, 1);
+  assert.deepEqual(rel.map((p) => p.level), [null, 0, 0, 0], "sub-binned: the band is comfortable and hears nothing");
+  const canon = g.perceptAgainst(band, 440);
+  assert.deepEqual(canon.map((p) => p.level), [13, 13, 13, 13], "the tuning fork hears every round of drift at full gain");
+  // honest nuance: relative gates are not deaf, they are scale-dependent —
+  // a +100 jump IS heard relatively (JND), a +1 drift is not:
+  assert.deepEqual(g.perceive([6400, 6500, 6600, 6700], 1).slice(1).map((p) => p.level), [4, 3, 3]);
+  // fleet lesson, pinned: the canon chain with prev_hash=0 in every live cell
+  // (repo-publication-log, today) is THIS — a band with no tuning fork.
+  // drift is invisible until an absolute reference joins.
+});
