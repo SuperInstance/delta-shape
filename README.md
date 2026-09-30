@@ -127,6 +127,27 @@ passing pins without the parent lane = training wheels off; a cell's first
 autonomous receipt about the world = first breath. The maturity ladder is the
 fleet's own greenhorn → able-seaman, written in receipts.
 
+## Trained intelligence on the perceptual layer (D13–D15, `src/learn.mjs`)
+
+The captain: *"see if you can train your own intelligence for tasks on them."*
+Two classical learners, both integer-exact, seeded, deterministic:
+
+- **Perceptron over percept-histogram features** (D13): features are counts of
+gate events (`[nulls, level0..6, plus, minus]`) — the intelligence sits one
+derivative down from raw values, consuming *notices* not *states*. Trains on 5
+seeded generators (`drift/osc/step/chirp/noise`): mistake curve `[4,4,3,3,2,2]`,
+20/20 train, ≥18/20 holdout, weights golden-hashed (`12f14b6b1c4a68a6`),
+retraining reproduces the intelligence bit-for-bit.
+- **The learning curve is a shape object** (D14): non-increasing, at least one
+strict drop — decay of surprise, System-2 listening pinned as a delta-shape.
+- **NGram next-event prediction** (D15): drift/step/chirp ≥0.95 predictable;
+osc with magnitude jitter 0.45; noise 0.17. Predictability is a property of
+the *generator*, and the trained model exposes it rather than hallucinating
+order. An intelligence that knows its limits, pinned.
+
+Honest note (the doctrine): 90% holdout, not 100% — two seeded episodes are
+genuinely confusable through the Weber gate, and the pin says so.
+
 ## Honest limits (pinned, not hidden)
 
 - **Magnitude blindness is deliberate.** A +1 rise and a +1000 rise hash alike. Value

@@ -162,3 +162,53 @@ test("D12 no replays: the same words sealed twice are two different messages", a
   // the general law: a chain content-addresses position, not content.
   // "a repeat is a new message of what the old message was" is structural.
 });
+
+// --- D13–D15: trained intelligence ON the perceptual layer (captain: "train your own intelligence") ---
+
+const KINDS = ["drift", "osc", "step", "chirp", "noise"];
+const mkEpisodes = (L, seedBase, n) =>
+  KINDS.flatMap((k, ki) => Array.from({ length: 4 }, (_, j) => ({ kind: k, series: L.genSeries(k, seedBase + ki * 97 + j * 13, n) })))
+    .map((e) => ({ ...e, f: L.features(e.series) }));
+
+test("D13 the perceptron learns to classify generators from percept streams: converges, generalizes, deterministic (golden weights)", async () => {
+  const L = await import("../src/learn.mjs");
+  const { createHash } = await import("node:crypto");
+  const train = mkEpisodes(L, 11, 48), holdout = mkEpisodes(L, 5003, 48);
+  const { P, curve } = L.trainPerceptron(train, 6, KINDS);
+  assert.deepEqual(curve, [4, 4, 3, 3, 2, 2], "mistake curve, exact — non-increasing, ends above zero (honest margin, not overfit)");
+  const acc = (eps) => eps.filter((e) => P.predict(e.f) === e.kind).length;
+  assert.equal(acc(train), 20, "train: all 20 episodes correct");
+  assert.ok(acc(holdout) >= 18, `holdout generalizes: ${acc(holdout)}/20 (probed 18)`);
+  const W = JSON.stringify(P.W);
+  assert.equal(createHash("sha256").update(W, "utf8").digest("hex").slice(0, 16), "12f14b6b1c4a68a6", "golden trained weights");
+  const again = L.trainPerceptron(train, 6, KINDS);
+  assert.equal(JSON.stringify(again.P.W), W, "retraining on the same seeds reproduces the intelligence bit-for-bit");
+});
+
+test("D14 the learning curve is itself a shape object: non-increasing, decay of surprise", async () => {
+  const L = await import("../src/learn.mjs");
+  const m = await import("../src/shape.mjs");
+  const { curve } = L.trainPerceptron(mkEpisodes(L, 11, 48), 6, KINDS);
+  const deltas = curve.slice(1).map((v, i) => curve[i] - v); // improvements per epoch
+  assert.ok(deltas.every((d) => d >= 0), "mistakes never rise: shape " + m.shapeOf(curve));
+  assert.ok(deltas.some((d) => d > 0), "and it actually learns: at least one strict drop");
+});
+
+test("D15 the n-gram maps which generators are intrinsically predictable — the intelligence knows its limits", async () => {
+  const L = await import("../src/learn.mjs");
+  const alpha = Array.from({ length: 8 }, (_, l) => ["0", "+", "-"].map((s) => `${l}${s}`)).flat().concat(["x"]);
+  const G = new L.NGram(2, alpha);
+  for (const k of KINDS) {
+    const ev = L.streamEvents(L.genSeries(k, 42, 60));
+    for (let i = 2; i < ev.length; i++) G.observe([ev[i - 2], ev[i - 1]], ev[i]);
+  }
+  const hit = (k) => {
+    const ev = L.streamEvents(L.genSeries(k, 999, 60));
+    let h = 0;
+    for (let i = 2; i < ev.length; i++) if (G.predict([ev[i - 2], ev[i - 1]]) === ev[i]) h++;
+    return h / (ev.length - 2);
+  };
+  for (const k of ["drift", "step", "chirp"]) assert.ok(hit(k) >= 0.95, `${k} is rhythmically predictable`);
+  assert.ok(hit("osc") < 0.5, "osc with magnitude jitter is NOT captured by order-2 context — pinned honest");
+  assert.ok(hit("noise") < 0.25, "noise resists prediction above entropy — the model does not hallucinate order");
+});
