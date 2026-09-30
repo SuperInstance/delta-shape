@@ -81,6 +81,52 @@ everyone tuned relative, drift invisible, until an absolute reference joins.
 Nonzero genesis prev_hash is the fork. This is also twist-engine commensuration in
 miniature: relative consensus + absolute anchor = a commensurable instrument.
 
+## Time-first measurement (D10–D12, `src/time.mjs`)
+
+The captain: *flash-to-thunder ranging — 5 sec/mile is rough but the ratios are
+exact (half the seconds, half the distance); a boat's 5-minute predictor line is
+where-I-was-5-minutes-ago that length behind me; cruising speed is RPM (discrete
+rotations in time); people care how far in TIME you are; time breaks the analog
+problem — a distance question fractures into the coastline paradox, but set your
+caliper-divider to the length you go in one tick and count in whole numbers.*
+
+- **Ranging with honest remainders** (D10): `range(15,5) = {units:3, exact}`;
+`range(2,5) = {units:0, remainderTicks:2}` — a half-mile is *felt, not yet
+counted*. Doubling the delay doubles the count AND the remainder; no information
+lost to rounding.
+- **Ratios are calibration-independent**: `ratioExact` is cross-multiplied
+integer equality — exact under ANY `ticksPerUnit`. Relative exactness never
+drifts; only the label on the unit does. (The tuning fork, one layer down.)
+- **The predictor line is the degenerate gate** (D11): `trail(series, t, 1)` ≡
+`surround(series, t, 1)` — the boat instrument and the perceptual membrane are
+one object. `eta` rounds UP in whole ticks: 13 units at 3/tick = 5 ticks — the
+5th boundary is not optional.
+- **No replays** (D12): sealing identical content twice yields different
+receipt_ids, because the parent moved. *A repeated message is a new message of
+what the old message was* — structural, not metaphorical. (subleq-fabric's
+`run(N)` as an absolute cap is the same law for machines: a resumed run may not
+coast on the old budget.)
+
+## Senses as gates (the captain's framing, mapped)
+
+Audio is the slow, System-2 sense — listening happens over someone else's time.
+Its System-1 exceptions are alarms: the window break, the yell, the voice from
+behind. In `eLearn` the alarm lane is exactly one event: **silent + click =
+kill** — a hypothesis dies with no deliberation, the only interrupt in the
+learner. Vision at fast frame rate is motion-centric: percepts are *notices* of
+change — the shape layer (D3) is precisely "vision consuming deltas, not
+states." Scale is a dimension like color, pitch, timbre: the Weber gate's
+`level` is scale, content-addressed by `perceptHash`.
+
+## Cells: the fleet as organism
+
+Every cell (blood, brain, bone) stems from a division under pressure, incubated
+until its first breath of its own information, then iterating with the training
+wheels off. Mapped: genesis receipt with a **nonzero parent** = lineage;
+passing pins without the parent lane = training wheels off; a cell's first
+autonomous receipt about the world = first breath. The maturity ladder is the
+fleet's own greenhorn → able-seaman, written in receipts.
+
 ## Honest limits (pinned, not hidden)
 
 - **Magnitude blindness is deliberate.** A +1 rise and a +1000 rise hash alike. Value

@@ -125,3 +125,40 @@ test("D9 the band and the tuning fork: relative gates hide drift, the canon reve
   // (repo-publication-log, today) is THIS — a band with no tuning fork.
   // drift is invisible until an absolute reference joins.
 });
+
+// --- D10–D12: time-first measurement (captain: "everything is measured in time") ---
+
+test("D10 flash-to-thunder ranging: whole caliper counts, exact under any calibration", async () => {
+  const t = await import("../src/time.mjs");
+  assert.deepEqual(t.range(15, 5), { units: 3, remainderTicks: 0, exact: true });
+  assert.deepEqual(t.range(2, 5), { units: 0, remainderTicks: 2, exact: false }, "a half-mile felt, not yet counted — honest remainder");
+  // the captain's ratios, cross-multiplied: exact regardless of what 5s/mile really is
+  assert.deepEqual(t.ratioExact(25, 50), { half: true, double: true });
+  assert.deepEqual(t.ratioExact(50, 25), { half: true, double: true });
+  assert.deepEqual(t.ratioExact(25, 40), { half: false, double: false });
+  const r3 = t.range(15, 7), r6 = t.range(30, 7);
+  assert.equal(2 * r3.units + (2 * r3.remainderTicks) / 1, r6.units * 1 + r6.remainderTicks, "doubling the delay doubles the count AND the remainder — no information lost to rounding");
+});
+
+test("D11 the 5-minute predictor line is the degenerate causal gate; ETA is whole ticks, rounded up", async () => {
+  const t = await import("../src/time.mjs");
+  const positions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+  assert.equal(t.trail(positions, 9, 5), 4, "where I was 5 ticks ago, that length behind me");
+  assert.equal(t.trail(positions, 3, 5), null, "no lookback before the voyage starts");
+  assert.equal(t.predictorIsDegenerateGate(positions, 9), true, "the boat instrument and the perceptual membrane are one object");
+  assert.equal(t.eta(13, 3), 5, "4 ticks covers 12 units — you are not there until the 5th tick boundary");
+  assert.equal(t.eta(12, 3), 4);
+  assert.equal(t.eta(0, 3), 0);
+});
+
+test("D12 no replays: the same words sealed twice are two different messages", async () => {
+  const t = await import("../src/time.mjs");
+  const l = new t.TimeLedger();
+  const first = l.seal({ text: "turn to port", urgency: 1 });
+  const again = l.seal({ text: "turn to port", urgency: 1 });
+  assert.notEqual(first.receipt_id, again.receipt_id, "identical content, different identity");
+  assert.equal(again.parent, first.receipt_id, "the repeat is a SUCCESSOR — the ledger moved in between");
+  assert.equal(first.parent, "GENESIS");
+  // the general law: a chain content-addresses position, not content.
+  // "a repeat is a new message of what the old message was" is structural.
+});
